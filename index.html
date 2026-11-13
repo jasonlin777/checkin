@@ -127,8 +127,8 @@ function msg(t){$("msg").textContent=t;setTimeout(()=>{$("msg").textContent=""},
 function parse(t){
   const o={fee:0,ev:"",p:[]};
   const f=t.match(/費用[:：]\s*\$?\s*(\d+)/);if(f)o.fee=+f[1];
-  let v=null;(t.match(/(?:場地|地點)[:：][^\n]*/g)||[]).forEach(l=>{const x=l.split(/[:：]/)[1].trim();if(!v&&x&&!/號場/.test(x))v=x.split(/\s+/)[0]});const c=t.match(/([\d一二三四五六七八九十][\d一二三四五六七八九十、,，~\-]*)\s*號場/),d=t.match(/日期[:：]\s*(\d{1,2}\/\d{1,2})/);
-  if(v){o.venue=v;o.ev=v+(d?" "+d[1]:"")}if(c)o.courts=c[1]+"號場";
+  let v=null,c=null;(t.match(/(?:場地|地點)[:：][^\n]*/g)||[]).forEach(l=>{const x=l.split(/[:：]/)[1].trim();if(!x)return;if(/號場/.test(x)||/^[\d一二三四五六七八九十]/.test(x)){if(!c)c=x.replace(/[號場\s]+$/,"")+"號場"}else if(!v)v=x.split(/\s+/)[0]});if(!c){const m=t.match(/([\d一二三四五六七八九十][\d一二三四五六七八九十、,，~\-]*)\s*號場/);if(m)c=m[1]+"號場"}const d=t.match(/日期[:：]\s*(\d{1,2}\/\d{1,2})/);
+  if(v){o.venue=v;o.ev=v+(d?" "+d[1]:"")}if(c)o.courts=c;
   let wl=false,found=false;const lines=t.split(/\r?\n/);
   lines.forEach(l=>{
     if(/候補/.test(l))wl=true;
